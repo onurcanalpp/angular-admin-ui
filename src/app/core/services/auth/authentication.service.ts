@@ -26,7 +26,6 @@ export class AuthenticationService {
     signOut(): Observable<void> {
         return from(this.auth.signOut());
     }
-
 }
 
 type SignIn = {
