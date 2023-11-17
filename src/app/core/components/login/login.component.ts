@@ -25,8 +25,8 @@ export class LoginComponent {
     isLoggingIn: boolean = false;
 
     constructor(
-        private _authenticationService: AuthenticationService,
-        private route: Router,
+        private authService: AuthenticationService,
+        private router: Router,
         private snackBar: MatSnackBar) {
 
     }
@@ -36,27 +36,19 @@ export class LoginComponent {
         email: new FormControl('', Validators.required),
         password: new FormControl('', Validators.required)
     });
+    ngOnInit(){
+    }
 
     login() {
         this.isLoggingIn = true;
-        this._authenticationService.signIn({
+        this.authService.signIn({
             email: this.loginForm.value.email,
             password: this.loginForm.value.password
-        }).subscribe({
-            next: (res: any) => {
-                this.isLoggingIn = true;
-                this.route.navigate(['home']);
-            },
-            error: (err: any) => {
-                this.snackBar.open(err, "", {
-                    duration: 2000
-                });
-                this.isLoggingIn = false;
-            },
-            complete: () => {
-                console.log("done");
-            }
-        })
+        }).then((res: any) => {
+            this.isLoggingIn = true;
+            console.log("navigated-home", res);   
+            this.authService.checkUserAuthenticate();  
+        }).catch(()=> this.isLoggingIn = false);
     }
 
 }

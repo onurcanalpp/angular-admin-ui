@@ -4,7 +4,7 @@
             <div class="title">Login to your Account</div>
             <p class="description">See what is going on with your business</p>
         </div>
-        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="login()">
+        <form class="login-form" [formGroup]="loginForm">
             <div class="form-input" [ngClass]="{'has-error': loginForm.get('email')?.dirty && loginForm.get('email')?.invalid}">
                 <label for="username">Email</label>
                 <input type="text" placeholder="mail@gmail.com"  formControlName="email">
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="form-input">
-                <button [disabled]="!loginForm.valid" *ngIf="!isLoggingIn">Login</button>
+                <button [disabled]="!loginForm.valid" *ngIf="!isLoggingIn" (click)="login()">Login</button>
                 <button class="spinner" *ngIf="isLoggingIn"><mat-spinner diameter="20"></mat-spinner></button>
             </div>
         </form>
