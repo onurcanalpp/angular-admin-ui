@@ -4,14 +4,16 @@
             <div class="title">Login to your Account</div>
             <p class="description">See what is going on with your business</p>
         </div>
-        <form action="" class="login-form">
-            <div class="form-input">
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="login()">
+            <div class="form-input" [ngClass]="{'has-error': loginForm.get('email')?.dirty && loginForm.get('email')?.invalid}">
                 <label for="username">Email</label>
-                <input type="text" placeholder="mail@gmail.com" required>
+                <input type="text" placeholder="mail@gmail.com"  formControlName="email">
+                <span class="input-error-message" *ngIf="loginForm.get('email')?.dirty && loginForm.get('email')?.invalid">Email is required</span>
             </div>
-            <div class="form-input">
+            <div class="form-input" [ngClass]="{'has-error': loginForm.get('password')?.dirty && loginForm.get('password')?.invalid}">
                 <label for="password">Password</label>
-                <input type="password" placeholder="***************">
+                <input type="password" placeholder="***************" formControlName="password">
+                <span class="input-error-message" *ngIf="loginForm.get('password')?.dirty && loginForm.get('password')?.invalid">Password is Required</span>
             </div>
             <div class="form-input-group checkbox">
                 <div class="form-input">
@@ -24,7 +26,10 @@
                     <a href="#">Forgot password?</a>
                 </div>
             </div>
-            <div class="form-input"><button>Login</button></div>
+            <div class="form-input">
+                <button [disabled]="!loginForm.valid" *ngIf="!isLoggingIn">Login</button>
+                <button class="spinner" *ngIf="isLoggingIn"><mat-spinner diameter="20"></mat-spinner></button>
+            </div>
         </form>
     </div>
 </div>
