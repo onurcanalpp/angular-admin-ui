@@ -7,22 +7,17 @@ import { AuthenticationService } from '../services/auth/authentication.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
-
-    private isLoggedIn!: boolean;
-    constructor(private authService: AuthenticationService, private router: Router) {}
-
-    canActivate(
-      next: ActivatedRouteSnapshot,
-      state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-
-      console.log(this.authService.isLoggedIn$.value)
-      if (this.authService.isLoggedIn$.value) {
-          return true;
-      }
-
-      this.router.navigate(['/login']);
-      return this.isLoggedIn;
+export class AuthGuard {
+  constructor(public authService: AuthenticationService, public router: Router) {}
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | Promise<boolean> | UrlTree | boolean {
+    console.log(this.authService.isLoggedIn);
+    if (this.authService.isLoggedIn !== true) {
+      window.alert('Access Denied, Login is required!');
+      this.router.navigate(['login']);
     }
-
+    return true;
+  }
 }

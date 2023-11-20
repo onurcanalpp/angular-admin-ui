@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { BehaviorSubject, Observable, catchError, from, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
@@ -8,45 +8,37 @@ import { Router } from '@angular/router';
     providedIn: 'root'
 })
 export class AuthenticationService {
+    private userData: any;
 
-    private readonly AUTH_TOKEN_KEY = 'authToken';
-
-    public isLoggedIn$ = new BehaviorSubject<boolean>(false);    
 
     constructor(
         private auth: AngularFireAuth,
-        private router: Router) {
-        this.checkStoredToken();
-        
-        console.log(this.isLoggedIn$.getValue())
-    }
-
-
-    checkUserAuthenticate() {
-        this.auth.authState.pipe(
-            tap(user => {
+        private router: Router,
+        private ngZone: NgZone)
+         {
+            this.auth.authState.subscribe((user) => {
                 if (user) {
-                    console.log("turn true");
-                    this.isLoggedIn$.next(true);
-                    console.log(this.isLoggedIn$.value);
-                    this.router.navigate(['/home']);  
+                  this.userData = user;
+                  localStorage.setItem('user', JSON.stringify(this.userData));
+                  JSON.parse(localStorage.getItem('user')!);
+                  this.router.navigate(['home']);
                 } else {
-                    this.isLoggedIn$.next(false);
+                  localStorage.setItem('user', 'null');
+                  JSON.parse(localStorage.getItem('user')!);
+                  this.router.navigate(['login']);
                 }
-            })
-        ).subscribe();
+              });
     }
 
-    private checkStoredToken() {
-        const storedToken = localStorage.getItem(this.AUTH_TOKEN_KEY);
-    
-        if (storedToken) {
-            this.isLoggedIn$.next(true);
-        }
-      }
-    
 
-   
+    get isLoggedIn(): boolean {
+        const user = JSON.parse(localStorage.getItem('user')!);
+        if (user == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     signIn(params: SignIn) {
         return new Promise((resolve, reject)=> {
@@ -54,22 +46,19 @@ export class AuthenticationService {
                 params.email,
                 params.password
               ).then((res: any) => {
-                  console.log(res);
-                  localStorage.setItem(this.AUTH_TOKEN_KEY, res?.uid)
-                  resolve(true)
+                   this.ngZone.run(()=> {
+                    localStorage.setItem('user', JSON.stringify(res));
+                    this.router.navigate(['home']);
+                   }) 
               }).catch(err => reject(err));
         })
         
       }
 
     signOut() {
-        localStorage.removeItem(this.AUTH_TOKEN_KEY);
-        this.auth.signOut().then(() => {
-            this.isLoggedIn$.next(false);
+        return this.auth.signOut().then(() => {
+            localStorage.removeItem('user');
             this.router.navigate(['login']);
-
-        }).catch(err=> {
-            console.log(err);
         });
     }
 }

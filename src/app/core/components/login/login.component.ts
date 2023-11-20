@@ -45,9 +45,6 @@ export class LoginComponent {
             email: this.loginForm.value.email,
             password: this.loginForm.value.password
         }).then((res: any) => {
-            this.isLoggingIn = true;
-            console.log("navigated-home", res);   
-            this.authService.checkUserAuthenticate();  
         }).catch(()=> this.isLoggingIn = false);
     }
 

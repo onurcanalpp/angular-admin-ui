@@ -9,6 +9,7 @@ import {
   import { environment } from '../environments/environment';
   import { routes } from './app.routes';
 import { AngularFireModule } from '@angular/fire/compat';
+import { AuthenticationService } from './core/services/auth/authentication.service';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -17,7 +18,8 @@ export const appConfig: ApplicationConfig = {
             AngularFireModule.initializeApp(environment.firebase),
           ]),
           ScreenTrackingService,
-          UserTrackingService
+          UserTrackingService,
+          AuthenticationService
     ],
     
 };
