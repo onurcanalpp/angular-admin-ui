@@ -28,7 +28,11 @@ export class LoginComponent {
         private authService: AuthenticationService,
         private router: Router,
         private snackBar: MatSnackBar) {
-
+            if(this.authService.isLoggedIn){
+                this.router.navigate(['home']);
+                window.alert("u already logged in");
+                console.log(this.authService.userInformation);
+            }
     }
 
 

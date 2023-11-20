@@ -27,7 +27,8 @@ export class AuthenticationService {
                   JSON.parse(localStorage.getItem('user')!);
                   this.router.navigate(['login']);
                 }
-              });
+            });
+              
     }
 
 
@@ -38,6 +39,10 @@ export class AuthenticationService {
         } else {
             return true;
         }
+    }
+
+    get userInformation() {
+        return JSON.parse(localStorage.getItem('user')!);
     }
 
     signIn(params: SignIn) {
